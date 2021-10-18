@@ -9,7 +9,7 @@
  * Operating System Concepts - 10th Edition
  * Copyright John Wiley & Sons - 2018
  */
-
+#include <linux/version.h>
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>

@@ -22,16 +22,25 @@
 #define PROC_NAME "hello"
 #define MESSAGE "Hello World\n"
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+#define HAVE_PROC_OPS
+#endif
+
 /**
  * Function prototypes
  */
 static ssize_t proc_read(struct file *file, char *buf, size_t count, loff_t *pos);
 
+#ifdef HAVE_PROC_OPS
+static struct proc_ops proc_ops = {
+        .proc_read = proc_read,
+};
+#else
 static struct file_operations proc_ops = {
         .owner = THIS_MODULE,
         .read = proc_read,
 };
-
+#endif
 
 /* This function is called when the module is loaded. */
 static int proc_init(void)

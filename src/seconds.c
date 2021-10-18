@@ -18,12 +18,22 @@ unsigned long init_jiffies,total_elapsed_time; //可以用這裡的變數
  */
 static ssize_t proc_read(struct file *file, char *buf, size_t count, loff_t *pos);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+#define HAVE_PROC_OPS
+#endif
+
 
 //而關於這個 proc 檔案的設定，則定義在 proc_ops 這個 file_operations 資料結構裡。
-static struct file_operations proc_ops = {
-        .owner = THIS_MODULE,// proc所有者
-        .read = proc_read,// 訪問proc时需要调用的函数
+#ifdef HAVE_PROC_OPS
+static struct proc_ops proc_ops = {
+        .proc_read = proc_read,
 };
+#else
+static struct file_operations proc_ops = {
+        .owner = THIS_MODULE,
+        .read = proc_read,
+};
+#endif
 
 
 // 當模組被載入會觸發這個函式 返回0代表成功 其他值代表失敗
